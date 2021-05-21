@@ -1,6 +1,8 @@
 /node_modules
 /vendor
 
+/public/js/*
+/public/css/*
 /public/hot
 /public/storage
 /storage/*.key
@@ -15,5 +17,8 @@ docker-compose.override.yml
 Homestead.json
 Homestead.yaml
 
+*.lock
 npm-debug.log
 yarn-error.log
+.styleci.yml
+package-lock.json
