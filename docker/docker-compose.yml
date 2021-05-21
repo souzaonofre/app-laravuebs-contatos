@@ -1,0 +1,50 @@
+# For more information: https://laravel.com/docs/sail
+version: '3'
+services:
+    webapp:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        working_dir: /var/www
+        volumes:
+            - '.:/var/www'
+        ports:
+            - '8000:8000'
+        networks:
+            - appnet
+        depends_on:
+            - mysql
+            - mongodb
+    mysql:
+        image: 'mysql:8.0'
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        volumes:
+            - 'volmysql:/var/lib/mysql'
+        networks:
+            - appnet
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+          
+    mongodb:
+        container_name: mongodb
+        image: mongo
+        networks:
+            - appnet
+        ports:
+            - 27017:27017
+        logging:
+            driver: none
+
+networks:
+    appnet:
+        driver: bridge
+volumes:
+    volmysql:
+        driver: local

@@ -1,2 +1,11 @@
 # app-laravuebs-contatos
-WebApp Contatos made with Laravel8 Vue2 BS5
+
+- Descrição: WebApp Contatos implementado com Laravel-v8.x VueJs-v2.x BootStrap-v5;
+
+# Teste local(deploy)
+
+- Requerimentos: "Docker & Docker-Composer instalados";
+
+- Linha de Comando: > docker-composer up
+
+- Navegador: http://localhost:8000
