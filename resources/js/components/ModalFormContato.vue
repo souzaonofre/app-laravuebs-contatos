@@ -122,8 +122,8 @@
 
 <script>
 import { Modal } from 'bootstrap';
+import Api from '../services/api.js';
 import { ADDRESS_URL } from '../env.js';
-import axios from 'axios';
 
 export default {
   props: {
@@ -178,6 +178,18 @@ export default {
       this.$emit('close-modal');
     },
 
+    isValidFormData() {
+      let requiredOk = true;
+      Object.keys(this.formData).forEach((key) => {
+        const val = this.formData[key];
+        if (!val || String(val).length <= 0) {
+          requiredOk = false;
+          return;
+        }
+      });
+      return requiredOk;
+    },
+
     formAddressComplete(addrData=null) {
       console.log(addrData);
       if (addrData && Object.keys(addrData).includes('endereco')) {
@@ -193,34 +205,24 @@ export default {
 
     searchAndCompleteAddress(cep='', using='fetch') {
       const baseUrl = ADDRESS_URL;
-      const url = String(baseUrl).concat(cep);
-
-      if (using='fetch') {
-        // Using Fetch API
-        fetch(url)
-          .then(resp => resp.json())
-          .then(addrData => {
-            if (addrData) {
-              this.formAddressComplete(addrData);
-            }
-          })
-          .catch(err => console.error(err));
-
-      } else {
-        // Using Axios library
-        axios.get(url)
-          .then(resp => {
-            const addrData = typeof resp === 'object' ? resp.data : null;
-            if (addrData) {
-              this.formAddressComplete(addrData);
-            }
-          })
-          .catch(err => console.error(err));
-      }
-
+      const url = String(baseUrl).concat('/').concat(cep);
+      const prm = Api.httpGet(url);
+      prm.then(addrData => this.formAddressComplete(addrData));
     },
 
-    salvarDados() {
+    salvarDados(using='fetch') {
+      const url = ADDRESS_URL;
+      //debugger;
+      if (this.isValidFormData()) {
+        const prm = Api.httpPost(url, this.formData);
+        prm.then(resp => {
+          alert('Dados salvos!');
+          this.emitCloseModal();
+        });
+
+      } else {
+        alert('Dados invalidos!');
+      }
 
     }
   },
