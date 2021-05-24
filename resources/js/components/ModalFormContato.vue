@@ -16,46 +16,85 @@
             <div class="row">
               <div class="col mb-1" title="Nome completo, ex: Fulano de Tal">
                 <label for="fcNome" class="form-label text-primary text-bold">Nome completo</label>
-                <input type="text" tabindex="1" class="form-control" id="fcNome" ref="fcNome">
+                <input id="fcNome" ref="fcNome" tabindex="1"
+                  type="text"
+                  class="form-control"
+                  v-model="formData.nome"
+                >
               </div>
               <div class="col mb-1" title="Email válido">
                 <label for="fcEmail" class="form-label text-primary text-bold">Email</label>
-                <input type="email" tabindex="2" class="form-control" id="fcEmail">
+                <input id="fcEmail" tabindex="2"
+                  type="email"
+                  class="form-control"
+                  v-model="formData.email"
+                >
               </div>
             </div>
             <div class="row">
               <div class="col mb-1" title="Telefone para contato">
                 <label for="fcTelefone" class="form-label text-primary text-bold">Telefone</label>
-                <input type="tel" tabindex="3" class="form-control" id="fcTelefone">
+                <input id="fcTelefone" tabindex="3"
+                  type="tel"
+                  class="form-control"
+                  v-model="formData.telefone"
+                >
               </div>
               <div class="col mb-1" title="CEP do endereço do contato">
                 <label for="fcCep" class="form-label text-primary text-bold">CEP</label>
-                <input type="text" tabindex="4" class="form-control" id="fcCep">
+                <input id="fcCep" tabindex="4"
+                  type="text"
+                  class="form-control"
+                  v-model="formData.cep"
+                >
               </div>
             </div>
+
             <hr />
+
             <div class="row">
               <div class="col-6 mb-1" title="Endereço, ex.: Rua ...">
                 <label for="fcEndereco" class="form-label text-primary text-bold">Endereço</label>
-                <input type="text" tabindex="6" class="form-control" id="fcEndereco">
+                <input  id="fcEndereco" tabindex="6"
+                  type="text"
+                  class="form-control"
+                  v-model="formData.endereco"
+                >
               </div>
               <div class="col-2 mb-1" title="Numero da residencia no endereço">
                 <label for="fcNumero" class="form-label text-primary text-bold">Numero</label>
-                <input type="text" tabindex="5" class="form-control" id="fcNumero" ref="fcNumero">
+                <input id="fcNumero" ref="fcNumero" tabindex="5"
+                  type="text"
+                  class="form-control"
+                  v-model="formData.numero"
+                >
               </div>
               <div class="col-4 mb-1" title="Bairro onde se localiza o endereço">
                 <label for="fcBairro" class="form-label text-primary text-bold">Bairro</label>
-                <input type="text" tabindex="7" class="form-control" id="fcBairro">
+                <input id="fcBairro" tabindex="7"
+                  type="text"
+                  class="form-control"
+                  v-model="formData.bairro"
+                >
               </div>
             </div>
+
             <div class="row">
               <div class="col-8 mb-1" title="Cidade onde se localiza o endereço">
                 <label for="fcCidade" class="form-label text-primary text-bold">Cidade</label>
-                <input type="text" tabindex="8" class="form-control" id="fcCidade">
+                <input id="fcCidade" tabindex="8"
+                  type="text"
+                  class="form-control"
+                  v-model="formData.cidade"
+                >
               </div>
               <div class="col-2 mb-1" title="Sigla do Estado onde se localiza a cidade">
                 <label for="fcEstado" class="form-label text-primary text-bold">Estado</label>
-                <input type="text" tabindex="9" class="form-control" id="fcEstado">
+                <input id="fcEstado" tabindex="9"
+                  type="text"
+                  class="form-control"
+                  v-model="formData.estado"
+                >
               </div>
             </div>
           </form>
@@ -63,8 +102,15 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
-            @click="$emit('close-modal')"
+            class="btn btn-success"
+            @click="salvarDados"
+          >
+            {{ "Salvar" }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="emitCloseModal"
           >
             {{ "Fechar" }}
           </button>
@@ -76,6 +122,8 @@
 
 <script>
 import { Modal } from 'bootstrap';
+import { ADDRESS_URL } from '../env.js';
+import axios from 'axios';
 
 export default {
   props: {
@@ -125,6 +173,58 @@ export default {
     }
   },
 
+  methods: {
+    emitCloseModal() {
+      this.$emit('close-modal');
+    },
+
+    formAddressComplete(addrData=null) {
+      console.log(addrData);
+      if (addrData && Object.keys(addrData).includes('endereco')) {
+        Object.keys(this.formData).forEach((key) => {
+          if (Object.keys(addrData).includes(key)) {
+            this.formData[key] = addrData[key];
+            this.$refs.fcNumero.focus();
+            this.$forceUpdate();
+          }
+        })
+      }
+    },
+
+    searchAndCompleteAddress(cep='', using='fetch') {
+      const baseUrl = ADDRESS_URL;
+      const url = String(baseUrl).concat(cep);
+
+      if (using='fetch') {
+        // Using Fetch API
+        fetch(url)
+          .then(resp => resp.json())
+          .then(addrData => {
+            if (addrData) {
+              this.formAddressComplete(addrData);
+            }
+          })
+          .catch(err => console.error(err));
+
+      } else {
+        // Using Axios library
+        axios.get(url)
+          .then(resp => {
+            const addrData = typeof resp === 'object' ? resp.data : null;
+            if (addrData) {
+              this.formAddressComplete(addrData);
+            }
+          })
+          .catch(err => console.error(err));
+      }
+
+    },
+
+    salvarDados() {
+
+    }
+  },
+
   watch: {
     modalOpen: {
       immediate: false,
@@ -151,6 +251,15 @@ export default {
               this.formData[key] = this.contatoData[key];
             }
           });
+        }
+      }
+    },
+    'formData.cep': {
+      immediate: false,
+      deep: true,
+      handler: function(val) {
+        if (val && String(val).length >= 8) {
+          this.searchAndCompleteAddress(val);
         }
       }
     }

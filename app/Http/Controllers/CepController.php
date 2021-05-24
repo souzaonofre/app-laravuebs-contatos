@@ -20,24 +20,24 @@ class CepController extends Controller
         //dump($cep);
         $service = new CepService();
         if (!is_object($service)) {
-            return response()->json();
+            return response()->json(null);
         }
-        
+
         $addressData = $service->getAddressByCep($cep);
         if (!\is_array($addressData) || !array_key_exists('cep', $addressData)) {
-            return response()->json();
+            return response()->json(null);
         }
-        
+
         $respData = [
             'endereco' => $addressData['address'],
             'bairro' => $addressData['district'],
             'cidade' => $addressData['city'],
             'estado' => $addressData['state'],
         ];
-        
+
         return response()->json($respData);
-        
+
     }
 
- 
+
 }

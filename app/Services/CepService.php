@@ -9,7 +9,7 @@ use App\Services\BaseService;
 class CepService extends BaseService
 {
     private object $httpClient;
-    
+
     /**
      * Create a CepService instance.
      *
@@ -56,28 +56,35 @@ class CepService extends BaseService
     public function getAddressByCep(string $cep = '')
     {
         $cep = $this->cepStrSanitizer($cep);
-        
+
         if (!$this->httpClient || !is_numeric($cep)) {
             return [];
         }
-        
+
         $uri = sprintf('json/%s', $cep);
-        $resp = $this->httpClient->request('GET', $uri);
-        
-        $status = $resp->getStatusCode();
-        $contentLength = $resp->hasHeader('Content-Length');
-        $contentType = $resp->hasHeader('Content-Type') ? $resp->getHeader('Content-Type')[0] : '';
-        
-        if ($status != 200 || !$contentLength || !stripos($contentType, 'json')) {
-            return [];
+
+        try {
+            $resp = $this->httpClient->request('GET', $uri);
+
+            $status = $resp->getStatusCode();
+            $contentLength = $resp->hasHeader('Content-Length');
+            $contentType = $resp->hasHeader('Content-Type') ? $resp->getHeader('Content-Type')[0] : '';
+
+            if ($status != 200 || !$contentLength || !stripos($contentType, 'json')) {
+                return null;
+            }
+
+            $rawContent = $resp->getBody();
+
+            if (!$rawContent) {
+                return null;
+            }
+
+        } catch (\Throwable $th) {
+            return null;
+            //throw $th;
         }
-        
-        $rawContent = $resp->getBody();
-        
-        if (!$rawContent) {
-            return [];
-        }
-        
+
         return json_decode($rawContent, true);
     }
 }
