@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\CepService;
 
 
-class CepController extends Controller
+class AddressController extends Controller
 {
     /**
      * GetAddress By CEP argument

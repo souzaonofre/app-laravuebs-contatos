@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Contato;
 use Illuminate\Http\Request;
+use App\Services\CepService;
 
-class ContatoController extends Controller
+class ContatosController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,16 +14,6 @@ class ContatoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
     {
         //
     }
@@ -50,17 +41,6 @@ class ContatoController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Contato  $contato
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Contato $contato)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -82,4 +62,5 @@ class ContatoController extends Controller
     {
         //
     }
+
 }

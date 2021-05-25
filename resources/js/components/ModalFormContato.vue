@@ -123,7 +123,7 @@
 <script>
 import { Modal } from 'bootstrap';
 import Api from '../services/api.js';
-import { ADDRESS_URL } from '../env.js';
+import { ADDRESS_URL, CONTATOS_URL } from '../env.js';
 
 export default {
   props: {
@@ -144,6 +144,7 @@ export default {
   data() {
     return {
       formData: {
+        id: null,
         nome: null,
         email: null,
         telefone: null,
@@ -211,7 +212,7 @@ export default {
     },
 
     salvarDados(using='fetch') {
-      const url = ADDRESS_URL;
+      const url = CONTATOS_URL;
       //debugger;
       if (this.isValidFormData()) {
         const prm = Api.httpPost(url, this.formData);

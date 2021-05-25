@@ -21,6 +21,22 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 
 Route::get(
-    '/address/{cep}',
-    [App\Http\Controllers\CepController::class, 'getAddress']
+    '/contatos/{bd}',
+    [App\Http\Controllers\ContatosController::class, 'index']
 );
+
+Route::post(
+    '/contatos',
+    [App\Http\Controllers\ContatosController::class, 'store']
+);
+
+Route::put(
+    '/contatos/{id}',
+    [App\Http\Controllers\ContatosController::class, 'update']
+);
+
+Route::get(
+    '/address/{cep}',
+    [App\Http\Controllers\AddressController::class, 'getAddress']
+);
+

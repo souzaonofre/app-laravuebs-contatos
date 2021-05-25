@@ -27,7 +27,7 @@ export default {
         headers: {
           'Content-Type': 'application/json;charset=utf-8'
         },
-        body: JSON.stringify(this.formData)
+        body: JSON.stringify(data)
       };
 
       return fetch(url, fetchOptions)
@@ -42,12 +42,43 @@ export default {
           'Content-Type': 'application/json;charset=utf-8',
         },
       };
-      const data = JSON.stringify(data);
+      const postData = JSON.stringify(data);
 
-      return axios.post(url, data, axiosOpts)
+      return axios.post(url, postData, axiosOpts)
+        .then(resp => typeof resp === 'object' ? resp.data : null)
+        .catch(err => console.error(err));
+    }
+  },
+
+  httpPut: (url='', data={}, options={}, using='fetch') => {
+    if (using='fetch') {
+      // Using Fetch API
+      const fetchOptions = {
+        ... options,
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+      };
+
+      return fetch(url, fetchOptions)
+        .then(resp => typeof resp === 'object' ? resp.json() : null)
+        .catch(err => console.error(err));
+
+    } else {
+      // Using Axios library
+      const axiosOpts = {
+        ... options,
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+      };
+      const putData = JSON.stringify(data);
+
+      return axios.put(url, putData, axiosOpts)
         .then(resp => typeof resp === 'object' ? resp.data : null)
         .catch(err => console.error(err));
     }
   }
-
 }
