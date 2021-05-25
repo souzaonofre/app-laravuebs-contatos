@@ -215,7 +215,12 @@ export default {
       const url = CONTATOS_URL;
       //debugger;
       if (this.isValidFormData()) {
-        const prm = Api.httpPost(url, this.formData);
+        if (this.isInsertMode) {
+          const prm = Api.httpPost(url, this.formData);
+        } else {
+          const prm = Api.httpPut(url, this.formData);
+        }
+
         prm.then(resp => {
           alert('Dados salvos!');
           this.emitCloseModal();

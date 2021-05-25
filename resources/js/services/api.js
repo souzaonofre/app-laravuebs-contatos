@@ -51,6 +51,9 @@ export default {
   },
 
   httpPut: (url='', data={}, options={}, using='fetch') => {
+    const id = data && typeof data.id !== 'undefined' ? data.id : 0;
+    url = String(url).concat(`/${id}`);
+
     if (using='fetch') {
       // Using Fetch API
       const fetchOptions = {
